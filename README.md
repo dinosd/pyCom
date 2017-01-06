@@ -9,3 +9,6 @@ pyCom CODA library
  
  3. Supports web client.
  
+
+
+Copy coda and httpd folders to  /flash
