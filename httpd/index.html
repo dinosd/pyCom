@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NEMET.GR</title>
+	<meta charset="utf-8" />
+    <style>
+        body {
+            background-color:white;
+            font-family:'Lucida Console';
+            color:black;
+            font-size:25pt;
+        }
+        h1 {
+            color:white;
+            font-weight:bold;
+            font-size:30pt;
+            width:100%;
+            text-align:center;
+            border:solid;
+            border-width:1px;
+            border-color:darkblue;
+            background-color:green;
+        }
+        .F {
+            color:deeppink;
+            font-weight:bold;
+            font-size:30pt;
+        }
+        .AP {
+         
+            color:black;
+            width:50%;
+            border:solid;
+            border-width:1px;
+            border-color:gray;
+            padding:3px;
+            padding-left:5px;
+            background-color:whitesmoke;
+        }
+    </style>
+</head>
+<body>
+	<!--img src="logo.jpg"-->
+    <h1>NEMET.GR</h1>
+    <div>CHIPID:<span id="chipid" class="F"></span></div><br />
+    <div>
+        Your device is not connected to a wifi ap.<br /> 
+        Select an ap from the list
+    </div>
+    <br />
+    <div id="aplist"></div>
+   
+</body>
+</html>
+<script>
+    
+
+    webapi("/info.svc", function (ret) {
+        document.getElementById("chipid").innerHTML = ret.chipid;
+    });
+   webapi("/ap.svc", function (ret) {
+        for (i = 0; i < ret.length; i++) {
+            var id = "ap_" + i;
+            var id2 = "inp_" + i;
+            var id3 = "btn_" + i;
+            document.getElementById("aplist").innerHTML += "<div id='" + id + "' class='AP'>" + ret[i][0] + "</div>";
+            document.getElementById("aplist").innerHTML += "<input type='PASSWORD' id='" + id2 + "' style='display:none;font-size:30pt;height:48px'/>&nbsp;";
+            document.getElementById("aplist").innerHTML += "<button type='BUTTON' id='" + id3 + "' style='display:none;font-size:30pt;height:48px;' >Save</button>";
+        }
+        for (i = 0; i < ret.length; i++) {
+            var id = "ap_" + i;
+            var id3 = "btn_" + i;
+            document.getElementById(id3).onclick = function (ele) {
+                id = ele.currentTarget.id;
+                var apid = "ap_" + id.split("_")[1];
+                var fieldid = "inp_" + id.split("_")[1];
+                var ssid = document.getElementById(apid).innerText;
+                var pwd = document.getElementById(fieldid).value;
+                webapi("save.svc?" + ssid + "&" + pwd, function (ret) {
+                });
+            }
+            document.getElementById(id).onclick = function (ele) {
+                id = ele.currentTarget.id;
+                var fieldid = "inp_" + id.split("_")[1];
+                var buttonid = "btn_" + id.split("_")[1];
+                if (document.getElementById(fieldid).style.display == '') {
+                    document.getElementById(fieldid).style.display = 'none';
+                    document.getElementById(buttonid).style.display = 'none';
+                }
+                else {
+                    document.getElementById(fieldid).style.display = '';
+                    document.getElementById(buttonid).style.display = '';
+                }
+
+
+            }
+        }
+    });
+    function webapi(uri,callback) {
+        var xhttp = new XMLHttpRequest();
+        
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                var obj;
+                eval("obj=" + this.responseText + ";")
+                callback(obj);
+            }
+        };
+        xhttp.open("GET", uri, true);
+        xhttp.send();
+    }
+</script>
