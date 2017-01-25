@@ -361,4 +361,4 @@ class RFM69(RFM69_CONST_VARS):
     def initialize(self):
         pass    
         
-obj = RFM69('P9', 'P10', 1, 2)
+
