@@ -1,4 +1,6 @@
 #RFM69 Library for pyCOM
+#Ported from https://github.com/LowPowerLab/RFM69
+
 from coda_rfm69_regs import RFM69_CONST_VARS
 from machine import SPI
 from machine import Pin
