@@ -5,7 +5,8 @@ from machine import Pin
 
 myPins = {}    
 adc =  machine.ADC()
-
+HIGH = 1
+LOW = 2
 def delay(milliseconds):
     sleep_ms(milliseconds)
 
@@ -17,6 +18,9 @@ def millis():
     
 def reset():
     machine.reset()
+    
+def toHexString(num):
+    return "{0:#0{1}x}".format(num,4).replace("0x","")
     
 class SoftwareSerial:
     def __init__(self):
@@ -32,7 +36,8 @@ class SoftwareSerial:
         
 
 
-    
+#adc 0: available analog pins    13,14,15,16,17,18,19,20
+#       available digital pins   8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
 def pinMode(pinNumber, mode="OUTPUT"):
     pinName = "P" + str(pinNumber)
     pMode = Pin.OUT
@@ -95,4 +100,8 @@ def detachInterrupt(pinNumber):
     pin = myPins[pinName]
     pin.callback(handler=None)
     
-    
+def onTimer_seconds(seconds, handler):
+    machine.Timer.Alarm(handler, seconds, periodic=True)
+
+def onTimer_millis(mil, handler):
+     machine.Timer.Alarm(handler, ms=mil, periodic=True)
